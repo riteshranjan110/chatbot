@@ -19,10 +19,10 @@ import os
 import constants
 
 # Load your OpenAI API key
-OpenAI.api_key = ""
+OpenAI.api_key = "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"
 
-# Open AI API key for chatgpt to use local database
-os.environ["OPENAI_API_KEY"] = ""
+# API key for chatgpt to use local database
+os.environ["OPENAI_API_KEY"] = "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"
 
 # Prompt for GPT-3.5 Turbo
 SYSTEM_PROMPT = """You are chatting with an AI. There are no specific prefixes for responses, so you can ask or talk about anything you like.
@@ -69,15 +69,15 @@ def send_mail(text,send_flag=False):
         smtp = smtplib.SMTP('smtp.gmail.com', 587)
         smtp.ehlo()
         smtp.starttls()
-        smtp.login('youremail', 'password')
+        smtp.login('mailautomation110@gmail.com', 'nkswzvceetlvqxro')
 
         msg = MIMEMultipart()
         subject = "Please find the requested data." 
         msg['Subject'] = subject
         msg.attach(MIMEText(text))
 
-        to = ["customer/user mail id"]
-        smtp.sendmail(from_addr="your email",
+        to = ["riteshk981@gmail.com"]
+        smtp.sendmail(from_addr="mailautomation110@gmail.com",
                 to_addrs=to, msg=msg.as_string())
         smtp.quit() 
         return "Mail Sent Successfully"
@@ -123,7 +123,9 @@ def on_message(message_history: List[Message], state: dict = None):
         # If chatgpt is not able to find the answer in local database the we will directly use chatgpt.
         f1 = bot_response.find("sorry")>-1
         f2 = bot_response.find("don't have")>-1
-        if(f1 or f2):
+        query = query.lower()
+        f3 = (query.find('thanks') or query.find('welcome') or query.find('helpful'))
+        if(f1 or f2 or f3):
             bot_response =  OpenAI.generate(
                             system_prompt=SYSTEM_PROMPT,
                             message_history=message_history, # Assuming history is the list of user messages
