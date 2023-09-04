@@ -68,6 +68,13 @@ Response:
 ```bash
 Path to the main.py file: examples/openai-bot/main.py # You can create a main.py by yourself and add that path here. NOTE: The path should not be in quotes
 ```
+
+# Email Setup.
+Please use this link to setup your email so that u can send the mail automatically.
+https://www.letscodemore.com/blog/smtplib-smtpauthenticationerror-username-and-password-not-accepted/#:~:text=Here%20are%20some%20steps%20which%20you%20can%20follow,your%20Gmail%20password%2C%20not%20using%20the%20app%20password. 
+
+
+
 Now go to the link in blue color which is shown on the CLI and you will be able to chat with your bot!
 ![Local UI](assets/test_command.png)
 
