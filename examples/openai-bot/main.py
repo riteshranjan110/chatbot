@@ -19,9 +19,10 @@ import os
 import constants
 
 # Load your OpenAI API key
-OpenAI.api_key = "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"
+OpenAI.api_key = ""
 
-os.environ["OPENAI_API_KEY"] = "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"
+# Open AI API key for chatgpt to use local database
+os.environ["OPENAI_API_KEY"] = ""
 
 # Prompt for GPT-3.5 Turbo
 SYSTEM_PROMPT = """You are chatting with an AI. There are no specific prefixes for responses, so you can ask or talk about anything you like.
@@ -32,8 +33,8 @@ pleasant chat!
 ## Loading the dataset. We will load all the dataset while loaing the API itself.
 loader = CSVLoader(file_path=constants.PATH+"\\all_college_rank_list.csv",encoding="utf-8", csv_args={'delimiter': ','})
 data = loader.load()
-#print(data)
 
+# Generating embedding from the local database.
 embeddings = OpenAIEmbeddings()
 vectorstore = FAISS.from_documents(data, embeddings)
 
@@ -41,38 +42,42 @@ chain = ConversationalRetrievalChain.from_llm(
 llm = ChatOpenAI(temperature=0.0,model_name='gpt-3.5-turbo'),
 retriever=vectorstore.as_retriever())
 
-chat_history = []
-message_mail_history = []
+chat_history = [] # this stores chathistory.
+message_mail_history = [] # this stores the results that will be sent as mail of the users asks so.
+
+# This fucntion gets answers for the queries from the local database.
 def get_response(query, message_history):
     
     result = chain({"question": query, "chat_history":message_history})
-    #print("result = ",result)
     chat_history.append((query, result["answer"]))
     
     return result["answer"]
 
-# regex to validate emai; id.
+# regex to validate emai id.
 regex = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,7}\b'
+
+# This function validates of the email id is correct or not.
 def validate_email(email):
     if(re.fullmatch(regex, email)):
         return True
     else:
         return False
 
+# This function will send mail to the email id provided by the user.
 def send_mail(text,send_flag=False):
     if(send_flag):
         smtp = smtplib.SMTP('smtp.gmail.com', 587)
         smtp.ehlo()
         smtp.starttls()
-        smtp.login('mailautomation110@gmail.com', 'nkswzvceetlvqxro')
+        smtp.login('youremail', 'password')
 
         msg = MIMEMultipart()
         subject = "Please find the requested data." 
         msg['Subject'] = subject
         msg.attach(MIMEText(text))
 
-        to = ["riteshk981@gmail.com"]
-        smtp.sendmail(from_addr="mailautomation110@gmail.com",
+        to = ["customer/user mail id"]
+        smtp.sendmail(from_addr="your email",
                 to_addrs=to, msg=msg.as_string())
         smtp.quit() 
         return "Mail Sent Successfully"
@@ -80,7 +85,6 @@ def send_mail(text,send_flag=False):
 
 @bot()
 def on_message(message_history: List[Message], state: dict = None):
-    print("mail message history = ", message_mail_history)
     # We have customized the chatbot a bit.
     # We will take the latest query given by the user.
     query = message_history[-1]['content'][0]['value']
