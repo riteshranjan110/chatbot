@@ -19,10 +19,10 @@ import os
 import constants
 
 # Load your OpenAI API key
-OpenAI.api_key = "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"
+OpenAI.api_key = ""
 
 # API key for chatgpt to use local database
-os.environ["OPENAI_API_KEY"] = "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"
+os.environ["OPENAI_API_KEY"] = ""
 
 # Prompt for GPT-3.5 Turbo
 SYSTEM_PROMPT = """You are chatting with an AI. There are no specific prefixes for responses, so you can ask or talk about anything you like.
